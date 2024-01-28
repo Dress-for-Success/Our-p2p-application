@@ -32,53 +32,56 @@ kv = '''
 <MainScreen>:
     canvas.before:
         Color:
-            rgba: 116/255, 187/255, 251/255, 1  # Background color
+            rgba: 1, 1, 1, 1  
         Rectangle:
             size: self.size
             pos: self.pos
 
     BoxLayout:
         orientation: 'vertical'
-        spacing: 20
-        padding: 80
-
-        MDLabel:
-            text: "Welcome To"
-            halign: 'center'
-            theme_text_color: 'Custom'
-            font_name: "Roboto-Bold"
-            size_hint: 1, None
-            height: "70dp"
-
-        MDLabel:
-            text: "P2P Bank App"
-            halign: 'center'
-            padding: "0dp", "0dp", "0dp", "40dp"
-            font_name: "Roboto-Bold"
-
-        MDRaisedButton:
-            text: "Sign Up With Google"
-            padding: 20
-            icon: "Google"
-            md_bg_color: 236/255, 93/255, 93/255, 1
-            font_name: "Roboto-Bold"
-            size_hint: 1, None
-            height: "50dp"
-
-
-        MDRaisedButton:
-            text: 'Sign Up With Facebook'
-            icon: "facebook"
-            padding: 20
-            md_bg_color: 2/255, 2/255, 187/255, 1
-            font_name: "Roboto-Bold"
-            size_hint: 1, None
-            height: "50dp"
-
+        spacing: dp(30)
+        padding: dp(20)
 
         MDGridLayout:
             cols: 2
-            spacing: 30
+            size_hint_y: None
+            size_hint_x: 1
+            height: self.minimum_height
+
+            MDIconButton:
+                icon: "account-group-outline"
+                halign: "left"
+                background_color: 1, 1, 1, 1
+                user_font_size: "65dp" 
+                canvas:
+                    Color:
+                        rgba: 0, 0, 0, 0.5 
+
+            MDLabel:
+                text: "GTPL "
+                bold: True
+
+
+        Image:
+            source: "C:\Our-p2p-application\man rope.png"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.85}
+            size_hint: None, None
+            allow_stretch: True
+            size: "350dp", "120dp"
+            
+        MDLabel:
+            text: "Hello!"
+            halign: "center"
+            bold: True
+        MDLabel:
+            text: "Welcome to GTPL! We’re glad you have decided to join us."
+            halign: "center"
+            size_hint_y: None
+            height: dp(10)
+
+        MDGridLayout:
+            cols: 2
+            spacing: 20
             padding: "0dp", "40dp", "0dp", "0dp"
 
             MDRaisedButton:
@@ -91,7 +94,13 @@ kv = '''
                 md_bg_color: 2/255, 61/255, 224/255, 1
                 font_name: "Roboto-Bold"
                 size_hint: 1, None
-                height: "50dp"
+                canvas.before:
+                    Color:
+                        rgba: 2/255, 61/255, 224/255, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [10,] 
 
             MDRaisedButton:
                 id: signout
@@ -102,7 +111,41 @@ kv = '''
                 md_bg_color: 2/255, 61/255, 224/255, 1
                 font_name: "Roboto-Bold"
                 size_hint: 1, None
-                height: "50dp"
+        MDLabel:
+            text:''
+            
+        BoxLayout:
+            orientation: 'vertical'
+            padding: dp(20)
+            spacing: dp(20)
+
+            MDLabel:
+                text: 'Follow On Our Social Media'
+                halign: "center"
+
+            MDGridLayout:
+                cols: 3
+                spacing: dp(20)
+                size_hint: None, 1
+                size: self.minimum_size  # Ensure the grid layout takes its minimum size
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}  # Center the grid layout
+
+
+                MDFloatingActionButton:
+                    icon: 'facebook'
+                    on_press: app.open_link("https://www.facebook.com")
+                    md_bg_color: 2/255, 61/255, 224/255, 1
+                MDFloatingActionButton:
+                    icon: 'google'
+                    on_press: app.open_link("https://www.google.com")
+                    md_bg_color: 252/255, 3/255, 65/255, 1
+                MDFloatingActionButton:
+                    icon: 'linkedin'
+                    on_press: app.open_link("https://www.linkedin.com/company/gtplind/")
+                    md_bg_color: 2/255, 2/255, 187/255, 1
+
+        MDLabel:
+            text:''
 
 <SignupScreen>:
     BoxLayout:

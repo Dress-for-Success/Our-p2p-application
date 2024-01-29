@@ -29,7 +29,6 @@ from borrower_dashboard import (
 from lender_dashboard import (
     LenderDashboard, ViewProfileScreen, ViewLoansScreen2, ALlLoansScreen, ApprovedLoansScreen, user_helpers1
 )
-
 kv = '''
 <MainScreen>:
     canvas.before:
@@ -224,47 +223,98 @@ kv = '''
                 height: "50dp"
                 font_name: "Roboto-Bold"
 
-<DScreen>:
-    id: signout
+<MainDashboardLB>
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1  
+        Rectangle:
+            size: self.size
+            pos: self.pos
 
-    BoxLayout:
-        orientation: "vertical"
-        spacing: "10dp"
-        padding: "0dp"
+    MDBoxLayout:
+        orientation: 'vertical'
+        spacing: dp(30)
+        padding: dp(30)
 
-        MDTopAppBar:
-            title: "DashBoard"
-            elevation: 2
-            left_action_items: [["menu", lambda x: app.callback("Menu button pressed")]]
-            right_action_items: [["logout", lambda x: app.logout_function()]]
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: dp(30)
+            MDLabel: 
+                text: ""
 
-        GridLayout:
-            cols: 2
-            spacing: 30
-            padding: 80
+            MDLabel: 
+                text: ""
+            MDLabel:
+                text: "Looking to get a QuickBuck "
+                halign: "center"
+                bold: True
+            MDLabel:
+                text: " What's on yours mind? "
+                halign: "center"
+        MDLabel:
+            text: "Welcome to GTPL"
+            halign: "center"
+        MDLabel:
+            id:loginname
+            halign: "center"
+            color: 1/255, 26/255, 51/255, 1
+            bold:"True"
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: dp(25)
+            padding: dp(15)
+            size_hint_y: None
+            height: self.minimum_height
 
-            MDRaisedButton:
-                text: "Borrower"
-                md_bg_color: 98/255, 30/255, 166/255, 1
-                theme_text_color: 'Custom'
-                size_hint: 1, None
-                height: "50dp"
-                font_name: "Roboto-Bold"
-                on_release: app.root.current = 'BorrowerScreen'
+            canvas.before:
+                Color:
+                    rgba: 0, 1, 0, 1  
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [25, 25, 25, 25]
 
-            MDRaisedButton:
-                text: "Lender"
-                md_bg_color: 98/255, 30/255, 166/255, 1
-                pos_hint: {'right': 1, 'y': 0.5}
-                size_hint: 1, None
-                height: "50dp"
-                font_name: "Roboto-Bold"
-                on_release: app.root.current = 'LenderScreen'
+            MDIconButton:
+                icon: 'account-supervisor'
+                on_release: app.on_button_click()
 
+            MDLabel:
+                text: '  Get a Loan'
+                halign: 'left'
+            MDLabel:
+                text: '  I am looking to borrow from a lender'
+                halign: 'left'
+            MDLabel:
+                text: ''
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: dp(25)
+            padding: dp(10)
+            size_hint_y: None
+            height: self.minimum_height
 
-        MDTopAppBar:
-            title:"FAQ"
-            custom_action_items:[['help']]
+            canvas.before:
+                Color:
+                    rgba: 230/250, 230/250, 230/250 , 1  
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [25, 25, 25, 25]
+
+            MDIconButton:
+                icon: 'radioactive-circle-outline'
+                on_release: app.on_button_click()
+
+            MDLabel:
+                text: '  Lend'
+                halign: 'left'
+            MDLabel:
+                text: '  I am looking to issue a new loan as an investment'
+                halign: 'left'
+            MDLabel: 
+                text: ""
+        MDLabel: 
+            text: ""
 
 <LoginScreen>:
     BoxLayout:
@@ -327,6 +377,8 @@ kv = '''
 '''
 
 Builder.load_string(kv)
+conn = sqlite3.connect('kivymd.db')
+cursor = conn.cursor()
 
 
 class MainScreen(Screen):
@@ -338,6 +390,87 @@ class MainScreen(Screen):
     def change_text1(self):
         # Access the label in another screen and update its text
         pass
+
+class MainDashboardLB(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.on_pre_enter()
+    def change_text3(self):
+        # Access the label in another screen and update its text
+        login_status_label = MDApp.get_running_app().root.get_screen('login')
+        login_status_label.ids.email.text = ""
+        login_status_label.ids.password.text = ""
+        login_status_label1 = MDApp.get_running_app().root.get_screen('signup')
+        login_status_label1.ids.name.text = ""
+        login_status_label1.ids.mobile.text = ""
+        login_status_label1.ids.email.text = ""
+        login_status_label1.ids.password.text = ""
+        login_status_label1.ids.password2.text = ""
+        self.manager.current = 'main'
+    def load_user_data(self):
+        pass
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        cursor.execute('select * from registration_table')
+        rows = cursor.fetchall()
+        row_id_list = []
+        status = []
+        name_list = []
+
+        for row in rows:
+            row_id_list.append(row[0])
+            status.append(row[-1])
+            name_list.append(row[1])
+        log_index = status.index('logged')
+        self.ids.loginname.text = name_list[log_index]
+
+
+        # Check if 'logged' is in the status list
+        if 'logged' in status:
+            log_index = status.index('logged')
+            self.ids.loginname.text = name_list[log_index]
+        else:
+            # Handle the case when 'logged' is not in the status list
+            self.ids.loginname.text = "User Not Logged In"
+
+        Window.bind(on_keyboard=self.on_back_button)
+
+    def on_pre_leave(self):
+        Window.unbind(on_keyboard=self.on_back_button)
+
+    def on_back_button(self, instance, key, scancode, codepoint, modifier):
+        if key == 27:
+            self.go_back()
+            return True
+        return False
+
+    def go_back(self):
+        self.manager.transition = SlideTransition(direction='right')
+        self.manager.current = 'MainScreen'
+
+    def switch_screen(self, screen_name):
+        print(f"Switching to screen: {screen_name}")
+
+        # Get the screen manager
+        sm = self.manager
+
+        sm.transition = SlideTransition(direction='left')
+        sm.current = screen_name
+
+    def go_to_lender_landing(self):
+        # Get the screen manager
+        sm = self.manager
+
+        # Access the desired screen by name and change the current screen
+        sm.current = 'LenderLanding'
+
+    def go_to_borrower_landing(self):
+        # Get the screen manager
+        sm = self.manager
+
+        # Access the desired screen by name and change the current screen
+        sm.current = 'BorrowerLanding'
 
 
 class SignupScreen(Screen):
@@ -530,20 +663,8 @@ class SignupScreen(Screen):
         conn.close()
 
 
-class DScreen(Screen):
 
-    def change_text3(self):
-        # Access the label in another screen and update its text
-        login_status_label = MDApp.get_running_app().root.get_screen('login')
-        login_status_label.ids.email.text = ""
-        login_status_label.ids.password.text = ""
-        login_status_label1 = MDApp.get_running_app().root.get_screen('signup')
-        login_status_label1.ids.name.text = ""
-        login_status_label1.ids.mobile.text = ""
-        login_status_label1.ids.email.text = ""
-        login_status_label1.ids.password.text = ""
-        login_status_label1.ids.password2.text = ""
-        self.manager.current = 'main'
+
 
 
 class LoginScreen(Screen):
@@ -631,7 +752,7 @@ class LoginApp(MDApp):
         main_screen = MainScreen(name="main")
         login_screen = LoginScreen(name="login")
         signup_screen = SignupScreen(name="signup")
-        success_screen = DScreen(name="success")
+        success_screen = MainDashboardLB(name="success")
 
         sm.add_widget(main_screen)
         sm.add_widget(login_screen)
@@ -690,6 +811,7 @@ class LoginApp(MDApp):
         sm.add_widget(ViewProfileScreen(name='ViewProfileScreen'))
         sm.add_widget(ViewLoansScreen2(name='ViewLoansScreen2'))
         sm.add_widget(ALlLoansScreen(name='ALlLoansScreen'))
+        sm.add_widget(MainDashboardLB(name='MainDashboardLB'))
         sm.add_widget(ApprovedLoansScreen(name='ApprovedLoansScreen'))
 
         self.success_screen = success_screen

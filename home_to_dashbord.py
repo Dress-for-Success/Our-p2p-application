@@ -1,5 +1,6 @@
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import ScreenManager, SlideTransition
 from kivymd.app import MDApp
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton, MDRectangleFlatButton
@@ -703,6 +704,30 @@ class LoginApp(MDApp):
                 'signup').connection.is_connected():
             self.root.get_screen('signup').cursor.close()
             self.root.get_screen('signup').connection.close()
+    def on_pre_enter(self):
+        Window.bind(on_keyboard=self.on_keyboard)
+        Window.bind(on_keyboard=self.on_back_button)
+
+    def on_pre_leave(self):
+       Window.unbind(on_keyboard=self.on_keyboard)
+       Window.unbind(on_keyboard=self.on_back_button)
+
+    def on_back_button(self, instance, key, scancode, codepoint, modifier):
+
+        if key == 27:
+            self.go_back()
+            return True
+        return False
+
+    def on_keyboard(self, window, key, *args):
+        if key == 27:  # Key code for the 'Escape' key
+            # Keyboard is closed, move the screen down
+            self.screen_manager.y = 0
+        return True
+
+
+    def on_start(self):
+        Window.softinput_mode = "below_target"
 
 
 if __name__ == "__main__":

@@ -5,6 +5,7 @@ from kivymd.app import MDApp
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton, MDRectangleFlatButton
 import sqlite3
+import webbrowser
 from kivy.core.window import Window
 from borrower_registration import (
     BorrowerScreen, BorrowerScreen1, BorrowerScreen2, BorrowerScreen3, BorrowerScreen4, BorrowerScreen5,
@@ -64,7 +65,7 @@ kv = '''
 
 
         Image:
-            source: "C:\Our-p2p-application\man rope.png"
+            source:"man rope.png"
             pos_hint: {'center_x': 0.5, 'center_y': 0.85}
             size_hint: None, None
             allow_stretch: True
@@ -728,6 +729,9 @@ class LoginApp(MDApp):
 
     def on_start(self):
         Window.softinput_mode = "below_target"
+
+    def open_link(self, url):
+        webbrowser.open(url)
 
 
 if __name__ == "__main__":

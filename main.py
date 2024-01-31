@@ -188,7 +188,6 @@ kv = '''
             icon_left: 'cellphone'
             font_name: "Roboto-Bold"
             input_type: 'number'  
-            on_touch_down: root.on_mobile_number_touch_down()
 
         MDTextField:
             id: email
@@ -230,21 +229,23 @@ kv = '''
 
             MDRaisedButton:
                 text: "Back"
-                on_release: app.root.get_screen("MainScreen").manager.current = 'MainScreen'
+                on_release: app.root.current = "main"
                 md_bg_color: 0.031, 0.463, 0.91, 1
                 theme_text_color: 'Custom'
-                text_color: 1, 1, 1, 1
+                text_color: 0, 0, 0, 1
                 size_hint: 1, None
                 height: "50dp"
                 font_name: "Roboto-Bold"
 
             MDRaisedButton:
                 text: "Signup"
-                on_release: root.go_to_login()
+                on_release: app.root.get_screen("signup").login(name.text,mobile.text,email.text, password.text, password2.text)
                 md_bg_color: 0.031, 0.463, 0.91, 1
                 pos_hint: {'right': 1, 'y': 0.5}
+                text_color: 0, 0, 0, 1
                 size_hint: 1, None
                 height: "50dp"
+                font_name: "Roboto-Bold"
                 font_name: "Roboto-Bold"
         MDLabel:
             text:""
@@ -436,20 +437,24 @@ kv = '''
             height: "50dp"
             MDRaisedButton:
                 text: "Back"
-                on_release: app.root.current ='MainScreen'
+                on_release: app.root.current = "main"
+                on_release: app.root.get_screen("login").change_text3()
                 md_bg_color: 0.031, 0.463, 0.91, 1
                 theme_text_color: 'Custom'
-                text_color: 1, 1, 1, 1
+                text_color: 0, 0, 0, 1
                 size_hint: 1, None
                 height: "50dp"
                 font_name: "Roboto-Bold"
+
             MDRaisedButton:
                 text: "Login"
-                on_release: root.go_to_dashboard()
+                on_release: app.root.get_screen("login").on_login(email.text, password.text)
                 md_bg_color: 0.031, 0.463, 0.91, 1
                 pos_hint: {'right': 1, 'y': 0.5}
+                text_color: 0, 0, 0, 1
                 size_hint: 1, None
                 height: "50dp"
+                font_name: "Roboto-Bold"
                 font_name: "Roboto-Bold"
         MDLabel:
             text:""
@@ -519,88 +524,6 @@ class MainScreen(Screen):
     def change_text1(self):
         # Access the label in another screen and update its text
         pass
-
-class MainDashboardLB(Screen):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.on_pre_enter()
-    def change_text3(self):
-        # Access the label in another screen and update its text
-        login_status_label = MDApp.get_running_app().root.get_screen('login')
-        login_status_label.ids.email.text = ""
-        login_status_label.ids.password.text = ""
-        login_status_label1 = MDApp.get_running_app().root.get_screen('signup')
-        login_status_label1.ids.name.text = ""
-        login_status_label1.ids.mobile.text = ""
-        login_status_label1.ids.email.text = ""
-        login_status_label1.ids.password.text = ""
-        login_status_label1.ids.password2.text = ""
-        self.manager.current = 'main'
-    def load_user_data(self):
-        pass
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        cursor.execute('select * from registration_table')
-        rows = cursor.fetchall()
-        row_id_list = []
-        status = []
-        name_list = []
-
-        for row in rows:
-            row_id_list.append(row[0])
-            status.append(row[-1])
-            name_list.append(row[1])
-        log_index = status.index('logged')
-        self.ids.loginname.text = name_list[log_index]
-
-
-        # Check if 'logged' is in the status list
-        if 'logged' in status:
-            log_index = status.index('logged')
-            self.ids.loginname.text = name_list[log_index]
-        else:
-            # Handle the case when 'logged' is not in the status list
-            self.ids.loginname.text = "User Not Logged In"
-
-        Window.bind(on_keyboard=self.on_back_button)
-
-    def on_pre_leave(self):
-        Window.unbind(on_keyboard=self.on_back_button)
-
-    def on_back_button(self, instance, key, scancode, codepoint, modifier):
-        if key == 27:
-            self.go_back()
-            return True
-        return False
-
-    def go_back(self):
-        self.manager.transition = SlideTransition(direction='right')
-        self.manager.current = 'MainScreen'
-
-    def switch_screen(self, screen_name):
-        print(f"Switching to screen: {screen_name}")
-
-        # Get the screen manager
-        sm = self.manager
-
-        sm.transition = SlideTransition(direction='left')
-        sm.current = screen_name
-
-    def go_to_lender_landing(self):
-        # Get the screen manager
-        sm = self.manager
-
-        # Access the desired screen by name and change the current screen
-        sm.current = 'LenderLanding'
-
-    def go_to_borrower_landing(self):
-        # Get the screen manager
-        sm = self.manager
-
-        # Access the desired screen by name and change the current screen
-        sm.current = 'BorrowerLanding'
-
 
 class SignupScreen(Screen):
 
@@ -864,6 +787,87 @@ class LoginScreen(Screen):
 
         conn.commit()
         conn.close()
+class MainDashboardLB(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.on_pre_enter()
+    def change_text3(self):
+        # Access the label in another screen and update its text
+        login_status_label = MDApp.get_running_app().root.get_screen('login')
+        login_status_label.ids.email.text = ""
+        login_status_label.ids.password.text = ""
+        login_status_label1 = MDApp.get_running_app().root.get_screen('signup')
+        login_status_label1.ids.name.text = ""
+        login_status_label1.ids.mobile.text = ""
+        login_status_label1.ids.email.text = ""
+        login_status_label1.ids.password.text = ""
+        login_status_label1.ids.password2.text = ""
+        self.manager.current = 'main'
+    def load_user_data(self):
+        pass
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        conn = sqlite3.connect('kivymd.db')
+        cursor = conn.cursor()
+        cursor.execute('select * from registration_table')
+        rows = cursor.fetchall()
+        row_id_list = []
+        status = []
+        name_list = []
+
+        for row in rows:
+            row_id_list.append(row[0])
+            status.append(row[-1])
+            name_list.append(row[1])
+
+        conn.close()
+
+        # Check if 'logged' is in the status list
+        if 'logged' in status:
+            log_index = status.index('logged')
+            self.ids.loginname.text = name_list[log_index]
+        else:
+            # Handle the case when 'logged' is not in the status list
+            self.ids.loginname.text = "User Not Logged In"
+
+        Window.bind(on_keyboard=self.on_back_button)
+
+    def on_pre_leave(self):
+        Window.unbind(on_keyboard=self.on_back_button)
+
+    def on_back_button(self, instance, key, scancode, codepoint, modifier):
+        if key == 27:
+            self.go_back()
+            return True
+        return False
+
+    def go_back(self):
+        self.manager.transition = SlideTransition(direction='right')
+        self.manager.current = 'MainScreen'
+
+    def switch_screen(self, screen_name):
+        print(f"Switching to screen: {screen_name}")
+
+        # Get the screen manager
+        sm = self.manager
+
+        sm.transition = SlideTransition(direction='left')
+        sm.current = screen_name
+
+    def go_to_lender_landing(self):
+        # Get the screen manager
+        sm = self.manager
+
+        # Access the desired screen by name and change the current screen
+        sm.current = 'LenderLanding'
+
+    def go_to_borrower_landing(self):
+        # Get the screen manager
+        sm = self.manager
+
+        # Access the desired screen by name and change the current screen
+        sm.current = 'BorrowerLanding'
 
 
 class LoginApp(MDApp):

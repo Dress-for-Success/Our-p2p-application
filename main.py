@@ -149,79 +149,124 @@ kv = '''
             text:''
 
 <SignupScreen>:
+    canvas.before:
+        Color:
+            rgba:  1, 1, 1, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
     BoxLayout:
-        orientation: 'vertical'
-        padding: 80
-        spacing: 10
+        orientation: "vertical"
+        padding: dp(45)
+        spacing: dp(5)
 
         MDLabel:
-            id: label1
-            text: 'Sign Up'
-            halign: 'center'
+            text: 'Create Account'
+            font_size:dp(30)
+            halign: 'left'
             bold: True
+        MDLabel:
+            text: ' Please fill the input below here'
+            halign: 'left'
+        MDTextField:
+            id: name
+            hint_text: 'Enter full name'
+            multiline: False
+            helper_text: 'Enter a valid name'
+            helper_text_mode: 'on_focus'
+            icon_left: 'account'
+            font_name: "Roboto-Bold"
+            pos_hint: {'center_y': 0.1}
 
         MDTextField:
-            id:name
-            hint_text: "Enter Full Name"
-            helper_text: "Invalid name"
-            helper_text_mode: "on_error"
-            icon_right: 'account'
+            id: mobile
+            hint_text: 'Enter mobile number'
+            multiline: False
+            helper_text: 'Enter a valid number'
+            helper_text_mode: 'on_focus'
+            icon_left: 'cellphone'
+            font_name: "Roboto-Bold"
+            input_type: 'number'  
+            on_touch_down: root.on_mobile_number_touch_down()
 
         MDTextField:
-            id:mobile
-            hint_text: "Mobile No"
-            helper_text: "Invalid number"
-            helper_text_mode: "on_error"
-            icon_right: 'cellphone'
+            id: email
+            hint_text: 'Enter your email'
+            multiline: False
+            helper_text: 'Enter a valid email'
+            helper_text_mode: 'on_focus'
+            icon_left: 'email'
+            font_name: "Roboto-Bold"
 
         MDTextField:
-            id:email
-            hint_text: "Enter Your Email"
-            helper_text: "Invalid email"
-            helper_text_mode: "on_error"
-            icon_right: 'email'
-
-        MDTextField:
-            id:password
+            id: password
             hint_text: "Enter Your Password"
-            icon_right: 'eye-off'
-            helper_text: "Password must greater than 8 characters"
-            helper_text_mode: "on_error"
+            icon_left: 'lock-outline'
+            helper_text_mode: 'on_focus'
+            multiline: False
+            helper_text: "Password must be greater than 8 characters"
             password: True
+            font_name: "Roboto-Bold"
 
         MDTextField:
-            id:password2
+            id: password2
             hint_text: "Re-Enter Your Password"
             helper_text: "Password does not match"
-            helper_text_mode: "on_error"
-            icon_right: 'eye-off'
+            helper_text_mode: 'on_focus'
+            icon_left: 'lock-outline'
             password: True
+            font_name: "Roboto-Bold"
 
+        
 
         GridLayout:
             cols: 2
-            spacing: 30
-            padding: [0, "30dp", 0, 0]
+            spacing: dp(20)
+            padding: dp(20)
+            pos_hint: {'center_x': 0.50, 'center_y': 0.5}
+            size_hint: 1, None
+            height: "50dp"
 
             MDRaisedButton:
                 text: "Back"
-                on_release: app.root.current = "main"
+                on_release: app.root.get_screen("MainScreen").manager.current = 'MainScreen'
                 md_bg_color: 0.031, 0.463, 0.91, 1
                 theme_text_color: 'Custom'
-                text_color: 0, 0, 0, 1
+                text_color: 1, 1, 1, 1
                 size_hint: 1, None
                 height: "50dp"
                 font_name: "Roboto-Bold"
 
             MDRaisedButton:
                 text: "Signup"
-                on_release: app.root.get_screen("signup").login(name.text,mobile.text,email.text, password.text, password2.text)
+                on_release: root.go_to_login()
                 md_bg_color: 0.031, 0.463, 0.91, 1
                 pos_hint: {'right': 1, 'y': 0.5}
-                text_color: 0, 0, 0, 1
                 size_hint: 1, None
                 height: "50dp"
                 font_name: "Roboto-Bold"
+        MDLabel:
+            text:""
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: None, None
+            width: "190dp"
+            height: "35dp"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.2}
+    
+            MDLabel:
+                text: "Already have an account?"
+                font_size:dp(14)
+                theme_text_color: 'Secondary'
+                halign: 'center'
+                valign: 'center'
+    
+            MDFlatButton:
+                text: "Sign in"
+                font_size:dp(18)
+                theme_text_color: 'Custom'
+                text_color: 6/255, 143/255, 236/255, 1
 
 <MainDashboardLB>
     canvas.before:
@@ -317,63 +362,147 @@ kv = '''
             text: ""
 
 <LoginScreen>:
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1  
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    
     BoxLayout:
         orientation: 'vertical'
-        padding: 80
-        spacing: 10
+        spacing: dp(25)
+        padding: dp(20)
 
+        MDGridLayout:
+            cols: 2
+            size_hint_y: None
+            size_hint_x: 1
+            height: self.minimum_height
+            
+            
+            MDIconButton:
+                icon: "account-group-outline"
+                halign: "left"
+                background_color: 1, 1, 1, 1
+                user_font_size: "75dp" 
+                canvas:
+                    Color:
+                        rgba: 0, 0, 0, 0.5 
+
+            MDLabel:
+                text: "GTPL "
+                bold: True
+        
+            
         MDLabel:
-            id: label1
-            text: 'Login Form'
-            halign: 'center'
-            padding:15
-            bold: True
-
+            text: 'Welcome Back!'
+            halign: 'left'
+            font_name:"Roboto-Bold"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.81}
+        MDLabel:
+            text: ' Please sign in to continue'
+            halign: 'left'
         MDTextField:
-            id: email
-            hint_text: "Email"
+            id: email      
+            hint_text: "Email/Mobile Number"
             helper_text_mode: "on_focus"
-            icon_right: "account"
-
+            icon_left: "email"
+            font_name: "Roboto-Bold"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.57}
         MDTextField:
             id: password
             hint_text: "Password"
-            helper_text: "Forgot your password?"
+            helper_text: "Enter your password"
             helper_text_mode: "on_focus"
-            icon_right: "key"
-            password: True
-            spacing: 20
-
+            icon_left: "lock"
+            size_hint_y: None
+            height: "30dp"
+            width: dp(200)
+            pos_hint: {'center_x': 0.5, 'center_y': 0.46}
+            on_text_validate: app.validate_password()
+        MDFlatButton:
+            text: "Forget password?"
+            halign: "right"
+            font_size:dp(14)
+            theme_text_color: 'Custom'
+            text_color: 6/255, 143/255, 236/255, 1         
         GridLayout:
             cols: 2
-            spacing: 30
-            padding: [0, "30dp", 0, 0]
-
+            spacing:dp(20)
+            padding:dp(20)
+            pos_hint: {'center_x': 0.5, 'center_y': 0.32}
+            size_hint: 1, None
+            height: "50dp"
             MDRaisedButton:
                 text: "Back"
-                on_release: app.root.current = "main"
-                on_release: app.root.get_screen("login").change_text3()
+                on_release: app.root.current ='MainScreen'
                 md_bg_color: 0.031, 0.463, 0.91, 1
                 theme_text_color: 'Custom'
-                text_color: 0, 0, 0, 1
+                text_color: 1, 1, 1, 1
                 size_hint: 1, None
                 height: "50dp"
                 font_name: "Roboto-Bold"
-
             MDRaisedButton:
                 text: "Login"
-                on_release: app.root.get_screen("login").on_login(email.text, password.text)
+                on_release: root.go_to_dashboard()
                 md_bg_color: 0.031, 0.463, 0.91, 1
                 pos_hint: {'right': 1, 'y': 0.5}
-                text_color: 0, 0, 0, 1
                 size_hint: 1, None
                 height: "50dp"
                 font_name: "Roboto-Bold"
-
-
         MDLabel:
-            id: error_label
-            text: ""
+            text:""
+        MDLabel:
+            text:""
+        BoxLayout:
+            orientation: 'vertical'
+            padding: dp(20)
+            spacing: dp(20)
+            MDLabel:
+                text: '-----------0r-----------'
+                halign: "center"
+
+            MDLabel:
+                text: 'Sign Up'
+                halign: "center"
+
+            MDGridLayout:
+                cols: 2
+                spacing: dp(20)
+                size_hint: None, 1
+                size: self.minimum_size  # Ensure the grid layout takes its minimum size
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}  # Center the grid layout
+
+
+                MDFloatingActionButton:
+                    icon: 'facebook'
+                    md_bg_color: 2/255, 61/255, 224/255, 1
+                MDFloatingActionButton:
+                    icon: 'google'
+                    md_bg_color: 252/255, 3/255, 65/255, 1
+        MDLabel:
+            text:""
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: None, None
+            width: "190dp"
+            height: "35dp"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.2}
+    
+            MDLabel:
+                text: "Don't have an account?"
+                font_size:dp(14)
+                theme_text_color: 'Secondary'
+                halign: 'center'
+                valign: 'center'
+    
+            MDFlatButton:
+                text: "Sign Up"
+                font_size:dp(18)
+                theme_text_color: 'Custom'
+                text_color: 6/255, 143/255, 236/255, 1
+                on_release: root.go_to_signup()
 '''
 
 Builder.load_string(kv)
